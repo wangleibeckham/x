@@ -3,6 +3,7 @@ package watcherx
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -73,11 +74,14 @@ func streamFileEvents(ctx context.Context, watcher *fsnotify.Watcher, c EventCha
 			// filter events to only watch watchedFile
 			// e.Name contains the name of the watchedFile (regardless whether it is a symlink), not the resolved file name
 			if path.Clean(e.Name) == watchedFile {
+				fmt.Printf("got event %s\n", e.String())
 				recentlyResolvedFile, err := filepath.EvalSymlinks(watchedFile)
 				// when there is no error the file exists and any symlinks can be resolved
 				if err != nil {
+					fmt.Printf("err %+v\n", err)
 					// check if the watchedFile (or the file behind the symlink) was removed
 					if _, ok := err.(*os.PathError); ok {
+						fmt.Printf("removed %s\n", e.Name)
 						c <- &RemoveEvent{eventSource}
 						removeDirectFileWatcher()
 						continue

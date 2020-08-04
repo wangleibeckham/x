@@ -5,7 +5,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"runtime"
 	"testing"
 	"time"
 
@@ -61,13 +60,15 @@ func kubernetesAtomicWrite(t *testing.T, dir, fileName, content string) {
 	)
 
 	// (9)
-	if runtime.GOOS == "windows" {
-		require.NoError(t, os.Remove(dataDirPath))
-		require.NoError(t, os.Symlink(tsDirName, dataDirPath))
-		require.NoError(t, os.Remove(newDataDirPath))
-	} else {
-		require.NoError(t, os.Rename(newDataDirPath, dataDirPath))
-	}
+	//
+	//if runtime.GOOS == "windows" {
+	//	require.NoError(t, os.Remove(dataDirPath))
+	//	require.NoError(t, os.Symlink(tsDirName, dataDirPath))
+	//	require.NoError(t, os.Remove(newDataDirPath))
+	//} else {
+	// t.Logf("renaming %s -> %s", newDataDirPath, dataDirPath)
+	require.NoError(t, os.Rename(newDataDirPath, dataDirPath))
+	//}
 
 	// (10) in our case there is nothing to remove
 
